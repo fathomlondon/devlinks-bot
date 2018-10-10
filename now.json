@@ -1,0 +1,9 @@
+{
+	"alias": "devlinks-bot",
+	"env": {
+		"GITHUB_TOKEN": "@devlinks-bot-github-token",
+		"SLACK_SIGNING_SECRET": "@devlinks-bot-slack-signing-secret",
+		"SLACK_BOT_USER_TOKEN": "@devlinks-bot-slack-bot-user-token"
+	},
+	"regions": ["bru1"]
+}
