@@ -11,9 +11,9 @@
     "precommit": "lint-staged"
   },
   "repository": {
-		"type": "git",
-		"url": "git+https://github.com/fathomlondon/devlinks-bot.git"
-	},
+    "type": "git",
+    "url": "git+https://github.com/fathomlondon/devlinks-bot.git"
+  },
   "keywords": [
     "slack",
     "bot",
@@ -22,9 +22,9 @@
   "author": "@fathomlondon",
   "license": "MIT",
   "bugs": {
-		"url": "https://github.com/fathomlondon/devlinks-bot/issues"
-	},
-	"homepage": "https://github.com/fathomlondon/devlinks-bot#readme",
+    "url": "https://github.com/fathomlondon/devlinks-bot/issues"
+  },
+  "homepage": "https://github.com/fathomlondon/devlinks-bot#readme",
   "dependencies": {
     "@octokit/rest": "^15.13.0",
     "@slack/client": "^4.8.0",
