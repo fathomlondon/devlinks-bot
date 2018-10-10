@@ -3,7 +3,7 @@ const { WebClient } = require('@slack/client');
 const { createMessageAdapter } = require('@slack/interactive-messages');
 
 const { SLACK_SIGNING_SECRET, SLACK_BOT_USER_TOKEN } = process.env;
-const SLACK_DEV_CHANNEL_ID = 'CD7GCGWBG';
+const SLACK_DEV_CHANNEL_ID = 'C02HL06V9';
 const SLACK_ACTION_SHOULD_SAVE_LINK = 'SHOULD_SAVE_LINK';
 const SLACK_ACTION_SAVE_LINK = 'SAVE_LINK';
 
