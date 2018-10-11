@@ -11,7 +11,7 @@ const TOOLS_FILE_PATH = 'TOOLS.md';
 const github = octokit();
 github.authenticate({ type: 'token', token: TOKEN });
 
-async function submitUrl({ linkType, url, title, description }) {
+async function submitUrl({ linkType, url, title, description, tags }) {
 	try {
 		const FILE_PATH = getFilePathForLinkType(linkType);
 
@@ -25,7 +25,7 @@ async function submitUrl({ linkType, url, title, description }) {
 			branch: branchData.name,
 		});
 
-		const formattedLink = formatMarkdownLink({ url, title, description });
+		const formattedLink = formatMarkdownLink({ url, title, description, tags });
 		const text = getTextContentFromFileContent(fileData.content);
 		const updatedText = `${text}\n${formattedLink}`;
 		const updatedContent = base64Encode(updatedText);
