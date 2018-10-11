@@ -3,7 +3,6 @@ const { WebClient } = require('@slack/client');
 const { createMessageAdapter } = require('@slack/interactive-messages');
 
 const { SLACK_SIGNING_SECRET, SLACK_BOT_USER_TOKEN } = process.env;
-const SLACK_DEV_CHANNEL_ID = 'C02HL06V9';
 const SLACK_ACTION_SHOULD_SAVE_LINK = 'SHOULD_SAVE_LINK';
 const SLACK_ACTION_SAVE_LINK = 'SAVE_LINK';
 
@@ -11,14 +10,14 @@ const slackEvents = createEventAdapter(SLACK_SIGNING_SECRET);
 const slackClient = new WebClient(SLACK_BOT_USER_TOKEN);
 const slackInteractions = createMessageAdapter(SLACK_SIGNING_SECRET);
 
-function sendQuestionMessage({ userId, urlToSave }) {
-	const message = makeQuestionMessage({ userId, urlToSave });
+function sendQuestionMessage({ channelId, userId, urlToSave }) {
+	const message = makeQuestionMessage({ channelId, userId, urlToSave });
 	return slackClient.chat.postEphemeral(message);
 }
 
-function makeQuestionMessage({ userId, urlToSave }) {
+function makeQuestionMessage({ channelId, userId, urlToSave }) {
 	return {
-		channel: SLACK_DEV_CHANNEL_ID,
+		channel: channelId,
 		user: userId,
 		text: `Hey <@${userId}>! ☝️ looks like this could be a useful link to save for later!`,
 		attachments: [
@@ -92,26 +91,26 @@ function openDetailsDialog({ trigger_id, url, title, description }) {
 	});
 }
 
-function makeLoadingMessage({ userId }) {
+function makeLoadingMessage({ channelId, userId }) {
 	return {
-		channel: SLACK_DEV_CHANNEL_ID,
+		channel: channelId,
 		user: userId,
 		text: `Hold my 🍺 while I submit the link for you…`,
 	};
 }
 
-function makeSuccessMessage({ userId, prUrl }) {
+function makeSuccessMessage({ channelId, userId, prUrl }) {
 	return {
-		channel: SLACK_DEV_CHANNEL_ID,
+		channel: channelId,
 		user: userId,
 		text: `Cheers <@${userId}>! I submitted a <${prUrl}|PR> for it. 👍`,
 	};
 }
 
-function makeFailureMessage({ userId, error, urlToSave }) {
+function makeFailureMessage({ channelId, userId, error, urlToSave }) {
 	const text = `Sorry <@${userId}>! I couldn't submit your link 😭`;
 	return {
-		channel: SLACK_DEV_CHANNEL_ID,
+		channel: channelId,
 		user: userId,
 		text,
 		attachments: [

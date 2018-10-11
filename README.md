@@ -2,6 +2,6 @@
 
 A Slack Bot App to help manage dev links
 
-## Docs
+## Contributing
 
-TODO.
+Documentation about contributing can be found [here](/docs/CONTRIBUTING.md).
