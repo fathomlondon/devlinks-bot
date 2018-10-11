@@ -66,8 +66,8 @@ $ npm install
 
 ## Deploying
 
-The app is automatically deployed to [now](https://zeit.co/now) via a GitHub integration.
+The app is automatically deployed to [Now](https://zeit.co/now) via a **GitHub** integration.
 
-When you are done with your changes and you have tested them locally using the dev version of the app, create a pull request on GitHub.
+When you are done with your changes and you have tested them locally using the dev version of the app, create a pull request (PR) on **GitHub**.
 
-This will automatically deploy each PR and once the PR gets merged to `master`, now will make sure to point to the latest deployment automatically.
+**Now** will automatically deploy each PR for you and once it gets merged to `master`, **Now** will make sure alias the last deployment to our production url. 👌
