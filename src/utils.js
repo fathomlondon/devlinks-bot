@@ -35,8 +35,23 @@ function getUrlInfo(url) {
 	});
 }
 
-function formatMarkdownLink({ url, title, description }) {
-	return `- [${title}](${url}) – ${description}`;
+function getFormattedTags(tags) {
+	const tagsArray = tags
+		.trim()
+		.split(',')
+		.map(s => s.trim())
+		.filter(Boolean);
+
+	if (tags.length === 0) {
+		return '';
+	}
+
+	return `\n  > **tags:** ${tagsArray.map(tag => `\`${tag}\``).join(', ')}`;
+}
+
+function formatMarkdownLink({ url, title, description, tags }) {
+	const formattedTags = getFormattedTags(tags);
+	return `- [${title}](${url}) – ${description}${formattedTags}`;
 }
 
 module.exports = {

@@ -61,12 +61,12 @@ function handleShouldSaveLink(payload, respond) {
 function handleSaveLink(payload, respond) {
 	const { user, submission, state } = payload;
 	const userId = user.id;
-	const { linkType, title, description } = submission;
+	const { linkType, title, description, tags } = submission;
 	const { url } = JSON.parse(state);
 
 	respond(makeLoadingMessage({ userId }));
 
-	submitUrl({ linkType, url, title, description })
+	submitUrl({ linkType, url, title, description, tags })
 		.then(prUrl => respond(makeSuccessMessage({ userId, prUrl })))
 		.catch(error =>
 			respond(makeFailureMessage({ userId, error, urlToSave: url }))
