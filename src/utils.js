@@ -1,6 +1,9 @@
 const metaScraper = require('meta-scraper').default;
 
-const REGEX_SLACK_FORMATTED_WEB_URL_ONLY = /^<https?:\/\/[:\w\-./?#|]+>$/;
+// NOTE: this regex is very lose because it relies on the fact
+// that Slack already parse and unfurl urls for us, so we know for sure
+// that if the user didn't type a correct url, we won't match this shape `<…>`
+const REGEX_SLACK_FORMATTED_WEB_URL_ONLY = /^<https?:\/\/.*>$/;
 
 function isFormattedSlackUrl(text) {
 	return text && text.match(REGEX_SLACK_FORMATTED_WEB_URL_ONLY);
