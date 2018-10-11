@@ -49,7 +49,7 @@ $ npm install
 
     ![ngrok](/docs/images/ngrok.png)
 
-1. Point the Slack app to your local server by updating the urls found at the 2 following pages (Don't forget to save each time!):
+1. Point the Slack app (**“devlinks-bot-dev”**) to your local server by updating the urls found at the 2 following pages (don't forget to save each time!):
     - [Event Subscriptions](https://api.slack.com/apps/ADBQSDCSD/event-subscriptions)
 
       ![ngrok](/docs/images/slack-events.png)
@@ -59,3 +59,15 @@ $ npm install
       ![ngrok](/docs/images/slack-actions.png)
 
 1. You should now be all set! Join the `#devlinks-bot-testing` channel on Slack and posting urls in this channel should let you test the bot out.
+
+> NOTE: By the nature of having to point the dev version of the Slack Bot app to a served url, it means only one person at a time can be working on this.
+
+> NOTE: Once you are running, you can stop and restart your app at will and you do not need to restart the tunnel, otherwise you will get a brand new forwarding url and will have to re-update the Slack urls again…
+
+## Deploying
+
+The app is automatically deployed to [now](https://zeit.co/now) via a GitHub integration.
+
+When you are done with your changes and you have tested them locally using the dev version of the app, create a pull request on GitHub.
+
+This will automatically deploy each PR and once the PR gets merged to `master`, now will make sure to point to the latest deployment automatically.
