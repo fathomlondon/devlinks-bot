@@ -1,4 +1,5 @@
 const express = require('express');
+require('now-env');
 const {
 	slackEvents,
 	slackInteractions,
@@ -21,11 +22,11 @@ app.use('/slack/event', slackEvents.expressMiddleware());
 app.use('/slack/action', slackInteractions.expressMiddleware());
 
 slackEvents.on('message', message => {
-	const { text, user } = message;
+	const { channel: channelId, user: userId, text } = message;
 	const isUrl = isFormattedSlackUrl(text);
 	if (isUrl) {
 		const url = extractUrl(text);
-		sendQuestionMessage({ userId: user, urlToSave: url });
+		sendQuestionMessage({ channelId, userId, urlToSave: url });
 	}
 });
 
@@ -59,16 +60,17 @@ function handleShouldSaveLink(payload, respond) {
 }
 
 function handleSaveLink(payload, respond) {
-	const { user, submission, state } = payload;
+	const { channel, user, submission, state } = payload;
+	const channelId = channel.id;
 	const userId = user.id;
 	const { linkType, title, description, tags } = submission;
 	const { url } = JSON.parse(state);
 
-	respond(makeLoadingMessage({ userId }));
+	respond(makeLoadingMessage({ channelId, userId }));
 
 	submitUrl({ linkType, url, title, description, tags })
-		.then(prUrl => respond(makeSuccessMessage({ userId, prUrl })))
+		.then(prUrl => respond(makeSuccessMessage({ channelId, userId, prUrl })))
 		.catch(error =>
-			respond(makeFailureMessage({ userId, error, urlToSave: url }))
+			respond(makeFailureMessage({ channelId, userId, error, urlToSave: url }))
 		);
 }
