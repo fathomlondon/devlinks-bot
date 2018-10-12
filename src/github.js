@@ -10,7 +10,6 @@ const { UrlAlreadySubmittedError } = require('./errors');
 const TOKEN = process.env.GITHUB_TOKEN;
 const OWNER = 'fathomlondon';
 const REPO = 'dev';
-const BRANCH = 'devlinks-bot-updates';
 const LIBRARIES_FILE_PATH = 'LIBRARIES.md';
 const TOOLS_FILE_PATH = 'TOOLS.md';
 
@@ -27,7 +26,7 @@ async function submitUrl({ linkType, url, title, description, tags }) {
 		});
 
 		const formattedLink = formatMarkdownLink({ url, title, description, tags });
-		const text = getTextContentFromFileContent(fileData.content);
+		const text = getTextFromFileContent(fileData.content);
 		const isUrlAlreadyInFile = isUrlInText({ url, text });
 
 		if (isUrlAlreadyInFile) {
@@ -37,24 +36,29 @@ async function submitUrl({ linkType, url, title, description, tags }) {
 		const updatedText = `${text}\n${formattedLink}`;
 		const updatedContent = base64Encode(updatedText);
 
-		await safeCreateBranch({
+		const BRANCH = `devlinks-bot-add-url-${Date.now()}`;
+
+		await createBranch({
 			branch: BRANCH,
 			baseBranch: 'master',
 		});
+
+		const COMMIT_MESSAGE = `✨ Add ${url} to ${FILE_PATH}`;
 
 		await updateFile({
 			path: FILE_PATH,
 			branch: BRANCH,
 			sha: fileData.sha,
-			message: '✨ Add a new link (devlinks-bot) 🤖',
+			message: COMMIT_MESSAGE,
 			content: updatedContent,
 		});
 
-		const pr = await safeCreatePullRequest({
+		const pr = await createPullRequest({
 			head: BRANCH,
 			base: 'master',
-			title: '✨ Add new links (devlinks-bot) 🤖',
-			body: 'devlinks-bot added some new links.',
+			title: COMMIT_MESSAGE,
+			body:
+				'> NOTE: This PR was raised by [devlinks-bot](https://github.com/fathomlondon/devlinks-bot) 🤖',
 		});
 
 		return pr.html_url;
@@ -66,16 +70,6 @@ async function submitUrl({ linkType, url, title, description, tags }) {
 
 function getFilePathForLinkType(linkType) {
 	return { library: LIBRARIES_FILE_PATH, tool: TOOLS_FILE_PATH }[linkType];
-}
-
-function safeCreateBranch({ branch, baseBranch }) {
-	return github.repos
-		.getBranch({ owner: OWNER, repo: REPO, branch })
-		.then(unwrapResponse, err => {
-			if (err.code === 404) {
-				return createBranch({ branch, baseBranch });
-			}
-		});
 }
 
 function createBranch({ branch, baseBranch }) {
@@ -110,7 +104,7 @@ function getFileContent({ path, branch }) {
 		.then(unwrapResponse);
 }
 
-function getTextContentFromFileContent(content) {
+function getTextFromFileContent(content) {
 	const text = base64Decode(content);
 	const sanitizedText = text.endsWith('\n') ? text.slice(0, -1) : text;
 	return sanitizedText;
@@ -130,27 +124,10 @@ function updateFile({ path, branch, sha, message, content }) {
 		.then(unwrapResponse);
 }
 
-function safeCreatePullRequest({ head, base, title, body }) {
+function createPullRequest({ head, base, title, body }) {
 	return github.pullRequests
-		.getAll({ owner: OWNER, repo: REPO })
-		.then(unwrapResponse)
-		.then(prs => {
-			const existingPr = prs.find(pr => pr.head.ref === BRANCH);
-			if (existingPr) {
-				return existingPr;
-			} else {
-				return github.pullRequests
-					.create({
-						owner: OWNER,
-						repo: REPO,
-						head,
-						base,
-						title,
-						body,
-					})
-					.then(unwrapResponse);
-			}
-		});
+		.create({ owner: OWNER, repo: REPO, head, base, title, body })
+		.then(unwrapResponse);
 }
 
 function unwrapResponse(response) {
