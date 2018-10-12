@@ -9,10 +9,12 @@ const {
 	SLACK_ACTION_SAVE_LINK,
 	makeLoadingMessage,
 	makeSuccessMessage,
+	makeAlreadySubmittedMessage,
 	makeFailureMessage,
 } = require('./slack');
 const { isFormattedSlackUrl, extractUrl, getUrlInfo } = require('./utils');
 const { submitUrl } = require('./github');
+const { UrlAlreadySubmittedError } = require('./errors');
 
 const PORT = process.env.PORT || 5000;
 
@@ -66,11 +68,17 @@ function handleSaveLink(payload, respond) {
 	const { linkType, title, description, tags } = submission;
 	const { url } = JSON.parse(state);
 
-	respond(makeLoadingMessage({ channelId, userId }));
-
 	submitUrl({ linkType, url, title, description, tags })
 		.then(prUrl => respond(makeSuccessMessage({ channelId, userId, prUrl })))
-		.catch(error =>
-			respond(makeFailureMessage({ channelId, userId, error, urlToSave: url }))
-		);
+		.catch(error => {
+			if (error instanceof UrlAlreadySubmittedError) {
+				respond(makeAlreadySubmittedMessage({ channelId, userId }));
+			} else {
+				respond(
+					makeFailureMessage({ channelId, userId, error, urlToSave: url })
+				);
+			}
+		});
+
+	respond(makeLoadingMessage({ channelId, userId }));
 }

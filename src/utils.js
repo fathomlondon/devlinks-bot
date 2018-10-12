@@ -36,6 +36,10 @@ function getUrlInfo(url) {
 }
 
 function getFormattedTags(tags) {
+	if (tags === null) {
+		return '';
+	}
+
 	const tagsArray = tags
 		.trim()
 		.split(',')
@@ -54,6 +58,10 @@ function formatMarkdownLink({ url, title, description, tags }) {
 	return `- [${title}](${url}) – ${description}${formattedTags}`;
 }
 
+function isUrlInText({ url, text }) {
+	return text.includes(url);
+}
+
 module.exports = {
 	isFormattedSlackUrl,
 	extractUrl,
@@ -61,4 +69,5 @@ module.exports = {
 	base64Encode,
 	getUrlInfo,
 	formatMarkdownLink,
+	isUrlInText,
 };
