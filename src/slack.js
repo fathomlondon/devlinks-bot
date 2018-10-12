@@ -107,6 +107,14 @@ function makeSuccessMessage({ channelId, userId, prUrl }) {
 	};
 }
 
+function makeAlreadySubmittedMessage({ channelId, userId }) {
+	return {
+		channel: channelId,
+		user: userId,
+		text: `Sorry <@${userId}>, this url was already submitted previously.`,
+	};
+}
+
 function makeFailureMessage({ channelId, userId, error, urlToSave }) {
 	const text = `Sorry <@${userId}>! I couldn't submit your link 😭`;
 	return {
@@ -149,5 +157,6 @@ module.exports = {
 	SLACK_ACTION_SAVE_LINK,
 	makeLoadingMessage,
 	makeSuccessMessage,
+	makeAlreadySubmittedMessage,
 	makeFailureMessage,
 };

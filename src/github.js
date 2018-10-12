@@ -1,5 +1,11 @@
 const octokit = require('@octokit/rest');
-const { base64Decode, base64Encode, formatMarkdownLink } = require('./utils');
+const {
+	base64Decode,
+	base64Encode,
+	formatMarkdownLink,
+	isUrlInText,
+} = require('./utils');
+const { UrlAlreadySubmittedError } = require('./errors');
 
 const TOKEN = process.env.GITHUB_TOKEN;
 const OWNER = 'fathomlondon';
@@ -15,20 +21,26 @@ async function submitUrl({ linkType, url, title, description, tags }) {
 	try {
 		const FILE_PATH = getFilePathForLinkType(linkType);
 
-		const branchData = await safeCreateBranch({
-			branch: BRANCH,
-			baseBranch: 'master',
-		});
-
 		const fileData = await getFileContent({
 			path: FILE_PATH,
-			branch: branchData.name,
+			branch: 'master',
 		});
 
 		const formattedLink = formatMarkdownLink({ url, title, description, tags });
 		const text = getTextContentFromFileContent(fileData.content);
+		const isUrlAlreadyInFile = isUrlInText({ url, text });
+
+		if (isUrlAlreadyInFile) {
+			throw new UrlAlreadySubmittedError();
+		}
+
 		const updatedText = `${text}\n${formattedLink}`;
 		const updatedContent = base64Encode(updatedText);
+
+		await safeCreateBranch({
+			branch: BRANCH,
+			baseBranch: 'master',
+		});
 
 		await updateFile({
 			path: FILE_PATH,
@@ -47,7 +59,7 @@ async function submitUrl({ linkType, url, title, description, tags }) {
 
 		return pr.html_url;
 	} catch (err) {
-		console.log('submitPrWithLink error', err);
+		console.log(err);
 		throw err;
 	}
 }
