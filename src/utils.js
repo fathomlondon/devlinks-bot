@@ -6,7 +6,11 @@ const metaScraper = require('meta-scraper').default;
 const REGEX_SLACK_FORMATTED_WEB_URL_ONLY = /^<https?:\/\/.*>$/;
 
 function isFormattedSlackUrl(text) {
-	return text && text.match(REGEX_SLACK_FORMATTED_WEB_URL_ONLY);
+	if (!text) {
+		return false;
+	}
+	const matches = text.match(REGEX_SLACK_FORMATTED_WEB_URL_ONLY);
+	return Boolean(matches);
 }
 
 function extractUrl(slackFormattedUrl) {
