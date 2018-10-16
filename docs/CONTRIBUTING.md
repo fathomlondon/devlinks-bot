@@ -56,7 +56,7 @@ $ npm install
 
     - [Interactive Messages](https://api.slack.com/apps/ADBQSDCSD/interactive-messages)
 
-      ![ngrok](/docs/images/slack-actions.png)
+      ![slack-interactive-components](/docs/images/slack-interactive-components.png)
 
 1. You should now be all set! Join the `#devlinks-bot-testing` channel on Slack and posting urls in this channel should let you test the bot out.
 
